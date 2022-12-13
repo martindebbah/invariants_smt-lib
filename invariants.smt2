@@ -1,0 +1,8 @@
+(declare-fun f (Int Int) Bool)
+(assert (f 0 0))
+(assert (forall ((i Int) (v Int))
+    (=> (and (f i v) (< i 3)) (f (+ i 1) (+ v 3)))))
+(assert (forall ((i Int) (v Int))
+    (=> (and (f i v) (>= i 3)) (= v 9))))
+(check-sat)
+(get-model)

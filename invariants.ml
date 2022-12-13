@@ -29,9 +29,18 @@ let x n = "x" ^ string_of_int n
   Par exemple, str_of_term (Var 3) retourne "x3", str_of_term (Add
    (Var 1, Const 3)) retourne "(+ x1 3)" et str_of_test (Equals (Var
    2, Const 2)) retourne "(= x2 2)".  *)
-let rec str_of_term t = "TODO" (* À compléter *)
 
-let str_of_test t = "TODO" (* À compléter *)
+let rec str_of_term t =
+  match t with
+  | Const(c) -> string_of_int c
+  | Var(v) -> x v
+  | Add(t1, t2) -> "(+ " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")"
+  | Mult(t1, t2) -> "(* " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")";;
+
+let str_of_test t =
+  match t with
+  | Equals(t1, t2) -> "(= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")"
+  | LessThan(t1, t2) -> "(< " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")";;
 
 let string_repeat s n =
   Array.fold_left (^) "" (Array.make n s)
@@ -42,7 +51,9 @@ let string_repeat s n =
    l'invariant.  Par exemple, str_condition [Var 1; Const 10] retourne 
    "(Inv x1 10)".
    *)
-let str_condition l = "TODO" (* À compléter *)
+let str_condition l =
+  List.fold_left (fun t1 t2 -> t1 ^ " " ^ str_of_term t2) "(Inv" l ^ ")"
+  
 
 (* Question 3. Écrire une fonction 
    `str_assert_for_all : int -> string -> string` qui prend en
@@ -55,7 +66,12 @@ let str_condition l = "TODO" (* À compléter *)
 
 let str_assert s = "(assert " ^ s ^ ")"
 
-let str_assert_forall n s = "TODO" (* À compléter *)
+let str_assert_forall n s =
+  let rec loop n tmp =
+    match n with
+    | 1 -> "(" ^ str_of_term (Var(1)) ^ " Int)" ^ tmp
+    | n -> loop (n - 1) (" (" ^ str_of_term (Var(n)) ^ " Int)" ^ tmp)
+  in str_assert ("(forall (" ^ (loop n ") (" ^ s ^ "))"));;
 
 (* Question 4. Nous donnons ci-dessous une définition possible de la
    fonction smt_lib_of_wa. Complétez-la en écrivant les définitions de
@@ -90,7 +106,8 @@ let p1 = {nvars = 2;
           assertion = Equals ((Var 2),(Const 9))}
 
 
-let () = Printf.printf "%s" (smtlib_of_wa p1)
+let () = (*Printf.printf "%s" (smtlib_of_wa p1)*)
+    Printf.printf "%s\n" (str_assert_forall 2 "< x1 x2");;
 
 (* Question 5. Vérifiez que votre implémentation donne un fichier
    SMTLIB qui est équivalent au fichier que vous avez écrit à la main
