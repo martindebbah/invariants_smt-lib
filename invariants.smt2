@@ -4,5 +4,6 @@
     (=> (and (f i v) (< i 3)) (f (+ i 1) (+ v 3)))))
 (assert (forall ((i Int) (v Int))
     (=> (and (f i v) (>= i 3)) (= v 9))))
-(check-sat)
+(check-sat-using (then qe smt))
 (get-model)
+(exit)

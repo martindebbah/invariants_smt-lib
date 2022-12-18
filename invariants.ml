@@ -75,8 +75,8 @@ let str_assert_forall n s =
 
  let rec xn_to_str n =
   if n < 1 then ""
-  else if n = 1 then "x" ^(string_of_int n)
-  else (xn_to_str (n - 1)) ^ " x" ^(string_of_int n);;
+  else if n = 1 then x n
+  else (xn_to_str (n - 1)) ^ " " ^ x n;;
 
 (* Question 4. Nous donnons ci-dessous une définition possible de la
    fonction smt_lib_of_wa. Complétez-la en écrivant les définitions de
@@ -101,8 +101,8 @@ let smtlib_of_wa p =
     ^ str_assert_forall p.nvars ( "=> (and (Invar "^ xn_to_str p.nvars ^")"
     ^ " " 
     ^ match p.loopcond with
-    | Equals(t1, t2) -> "(!= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")"
-    | LessThan(t1, t2) -> "(<> " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")" 
+    | Equals(t1, t2) -> str_of_test p.loopcond ^ ") "
+    | LessThan(t1, t2) -> "(>= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")) " 
     ^ str_of_test p.assertion ) in
   let call_solver =
     "; appel au solveur\n(check-sat-using (then qe smt))\n(get-model)\n(exit)\n" in
@@ -118,12 +118,17 @@ let p1 = {nvars = 2;
           assertion = Equals ((Var 2),(Const 9))}
 
 
-let () = Printf.printf "%s" (smtlib_of_wa p1)
-
-(* Question 5. Vérifiez que votre implémentation donne un fichier
-   SMTLIB qui est équivalent au fichier que vous avez écrit à la main
-   dans l'exercice 1. Ajoutez dans la variable p2 ci-dessous au moins
-   un autre programme test, et vérifiez qu'il donne un fichier SMTLIB
-   de la forme attendue. *)
-
-let p2 = None (* À compléter *)
+          
+  (* Question 5. Vérifiez que votre implémentation donne un fichier
+  SMTLIB qui est équivalent au fichier que vous avez écrit à la main
+  dans l'exercice 1. Ajoutez dans la variable p2 ci-dessous au moins
+  un autre programme test, et vérifiez qu'il donne un fichier SMTLIB
+  de la forme attendue. *)
+  
+let p2 = {nvars = 2;
+  inits = [(Const 2); (Const 0)];
+  mods = [Add((Var 1), (Const 1)); Add((Var 2), (Const 5))];
+  loopcond = LessThan((Var 1), (Const 5));
+  assertion = Equals((Var 2), (Const 15))}
+  
+let () = Printf.printf "%s" (smtlib_of_wa p2)
