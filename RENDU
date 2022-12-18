@@ -33,9 +33,10 @@ La commande `make` s'exécute sans erreur, et la sortie produite par
    la terminaison ?
    
 Il est naturel d'utiliser des fonctions récursives. Nos cas de base sont
-`Const` et `Var`. Nous sommes assurés de la terminaison de nos fonctions par la
-quantité strictement décroissante de `term` au sein d'un `term` constitué de
-`Add` ou de `Mult`.
+`Const` et `Var`. Nous sommes assurés de la terminaison vu que ces fonctions
+nécessitent un nombre d'opérations fini lié au `term`. Et dans tout les cas autres 
+que ceux de base, ces opérations sont effectuées sur une quantité strictement
+décroissante de `term` pour un `term` constitué de`Add` ou de `Mult`.
 
 ---
 
@@ -81,13 +82,14 @@ qui nous permet d'ajouter le bon nombre de variables.
    code pour construire un programme SMT-LIB plus proche de la façon
    dont les variables sont mises à jour en Java.
 
-Il faudrait ajouter un autre entier permettant de stocker la valeur de x1 après
-sa mise à jour. Par exemple, pour tout x1, x2 et x3, trois entiers, on aurait
-`x3 = x1 + 1`, `x1 = x1 + 1` et `x2 = x3 + 1`.
+Il faudrait ajouter des entiers pour stocker une copie de la valeur initiale 
+de chaque variable. Par exemple, pour tout x1, x2 on au aurait donc x3, x4 comme 
+suit : `x3 = x1`, `x4 = x2`, `x1 = x4 + 1` et `x2 = x3 + 1`
 
 ---
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
-**à remplir**
+Nous avons en plus des fonctions initales dans le projet, rajouté des fonctions 
+auiliaires tel que xn int -> string pour simplifier l'affichage du résultat.
 
 
