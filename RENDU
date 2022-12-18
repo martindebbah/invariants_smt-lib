@@ -86,6 +86,10 @@ Il faudrait ajouter des entiers pour stocker une copie de la valeur initiale
 de chaque variable. Par exemple, pour tout x1, x2 on au aurait donc x3, x4 comme 
 suit : `x3 = x1`, `x4 = x2`, `x1 = x4 + 1` et `x2 = x3 + 1`
 
+Il faudrait vérifier lors de l'assertion effectuée dans la boucle, si la valeur
+qu'on ajoute est une variable, et si elle a déjà été mise à jour. Si c'est le
+cas, on remplace alors cette variable par l'opération effectuée précédemment.
+
 ---
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
