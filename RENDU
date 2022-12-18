@@ -34,9 +34,10 @@ La commande `make` s'exécute sans erreur, et la sortie produite par
    
 Il est naturel d'utiliser des fonctions récursives. Nos cas de base sont
 `Const` et `Var`. Nous sommes assurés de la terminaison vu que ces fonctions
-nécessitent un nombre d'opérations fini lié au `term`. Et dans tout les cas autres 
-que ceux de base, ces opérations sont effectuées sur une quantité strictement
-décroissante de `term` pour un `term` constitué de`Add` ou de `Mult`.
+nécessitent un nombre d'opérations fini lié au `term`. Et dans tous les cas
+autres que ceux de base, ces opérations sont effectuées sur une quantité
+strictement décroissante de `term` pour un `term` constitué de`Add` ou de
+`Mult`.
 
 ---
 
@@ -82,18 +83,21 @@ qui nous permet d'ajouter le bon nombre de variables.
    code pour construire un programme SMT-LIB plus proche de la façon
    dont les variables sont mises à jour en Java.
 
-Il faudrait ajouter des entiers pour stocker une copie de la valeur initiale 
-de chaque variable. Par exemple, pour tout x1, x2 on au aurait donc x3, x4 comme 
-suit : `x3 = x1`, `x4 = x2`, `x1 = x4 + 1` et `x2 = x3 + 1`
-
-Il faudrait vérifier lors de l'assertion effectuée dans la boucle, si la valeur
-qu'on ajoute est une variable, et si elle a déjà été mise à jour. Si c'est le
-cas, on remplace alors cette variable par l'opération effectuée précédemment.
+Il faudrait vérifier lors de l'assertion, si la valeur qu'on ajoute est une
+variable, et si elle a déjà été mise à jour. Si c'est le cas, on remplace alors
+cette variable par l'opération effectuée précédemment. On pourrait mettre cela
+en oeuvre grâce à la liste `mods` qu'on entre en paramètres. Lorsqu'on dit que
+`x1 = x2 + 1`, on regarde dans la liste `mods` si il y a déjà une opération sur
+`x2`. Ce n'est pas le cas donc on laisse `x2` tel quel. Ensuite, pour
+`x2 = x1 + 1`, on regarde dans la liste, on trouve une opération sur `x1`, donc
+on remplace `x1` par cette opération.
 
 ---
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
 
-Nous avons en plus des fonctions initales dans le projet, rajouté des fonctions 
-auiliaires tel que xn int -> string pour simplifier l'affichage du résultat.
+Nous avons, en plus des fonctions initales dans le projet, rajouté une fonction
+auxiliaire `terms_of : int -> term list`, qui retourne, sous forme de liste,
+les variables de x1 à xn, permettant de simplifier l'affichage de
+`str_condition`.
 
 
