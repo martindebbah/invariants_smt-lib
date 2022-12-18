@@ -22,7 +22,8 @@ Questions sur votre code
    warnings, puis que `./invariants` produit une sortie au format
    SMT-LIB, et enfin que cette sortie est acceptée par Z3 ?
 
-**à remplir** 
+La commande `make` s'exécute sans erreur, et la sortie produite par 
+`./invariants` est bien au format SMT-LIB et est acceptée par Z3.
 
 ---
 
@@ -31,8 +32,10 @@ Questions sur votre code
    strictement décroissante au cours des appels successifs vous assure
    la terminaison ?
    
-
-**à remplir**
+Il est naturel d'utiliser des fonctions récursives. Nos cas de base sont
+`Const` et `Var`. Nous sommes assurés de la terminaison de nos fonctions par la
+quantité strictement décroissante de `term` au sein d'un `term` constitué de
+`Add` ou de `Mult`.
 
 ---
 
@@ -45,7 +48,11 @@ Questions sur votre code
    comment ces fonctions auxiliaires sont utilisées dans votre
    implémentation de la fonction `str_condition`.
    
-**à remplir**
+Nous avons utilisé la fonction auxiliaire `List.fold_left`. Cela nous permet
+de concaténer chaque élément de la liste passée en paramètre sous sa forme
+de chaîne de caractères. Avec comme chaîne de base "(Invar", puis chaque
+élément de la liste y sera concaténé à droite, puis on ajoute ")" au résultat
+obtenu. (= "(Invar x1 x2)")
 
 ---
 
@@ -55,7 +62,9 @@ Questions sur votre code
    auxiliaires sont utilisées dans votre implémentation de la fonction
    `str_assert_forall`.
    
-**à remplir**   
+Nous avons utilisé la fonction `str_assert` qui nous permet d'écrire "assert"
+avant notre assertion. Nous avons aussi utilisé une fonction récursive interne,
+qui nous permet d'ajouter le bon nombre de variables.
    
 ---
 
@@ -69,10 +78,12 @@ Questions sur votre code
    résulte en `x1` valant `2` et `x2` valant `2`. En Java, les mises à
    jour sont séquentielles et le résultat serait que `x1` vaudrait `2`
    et `x2` vaudrait `3`. Expliquez en français comment modifier le
-   code pour construite un programme SMT-LIB plus proche de la façon
+   code pour construire un programme SMT-LIB plus proche de la façon
    dont les variables sont mises à jour en Java.
 
-**à remplir**
+Il faudrait ajouter un autre entier permettant de stocker la valeur de x1 après
+sa mise à jour. Par exemple, pour tout x1, x2 et x3, trois entiers, on aurait
+`x3 = x1 + 1`, `x1 = x1 + 1` et `x2 = x3 + 1`.
 
 ---
 5. Avez-vous d'autres remarques sur votre rendu ? (question optionnelle)
