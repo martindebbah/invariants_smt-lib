@@ -73,6 +73,11 @@ let str_assert_forall n s =
     | n -> loop (n - 1) (" (" ^ str_of_term (Var(n)) ^ " Int)" ^ tmp)
   in str_assert ("(forall (" ^ (loop n ") (" ^ s ^ "))"));;
 
+ let rec xn_to_str n =
+  if n < 1 then ""
+  else if n = 1 then "x" ^(string_of_int n)
+  else (xn_to_str (n - 1)) ^ " x" ^(string_of_int n);;
+
 (* Question 4. Nous donnons ci-dessous une définition possible de la
    fonction smt_lib_of_wa. Complétez-la en écrivant les définitions de
    loop_condition et assertion_condition. *)
@@ -84,8 +89,7 @@ let smtlib_of_wa p =
     ^"(declare-fun Invar (" ^ string_repeat "Int " n ^  ") Bool)" in
   let loop_condition p =
     "; la relation Invar est un invariant de boucle\n"
-    ^ str_assert_forall p.nvars ( "=> (and (Invar (x1 x2) "
-    ^ str_condition (p.inits)
+    ^ str_assert_forall p.nvars ( "=> (and (Invar "^ xn_to_str p.nvars ^")"
     ^ " " 
     ^ str_of_test p.loopcond ^ ") " 
     ^ str_condition p.mods ) in
@@ -94,11 +98,11 @@ let smtlib_of_wa p =
     ^str_assert (str_condition p.inits) in
   let assertion_condition p =
     "; l'assertion finale est vérifiée\n"
-    ^ str_assert_forall p.nvars ( "=> (and (Invar (x1 x2)"
+    ^ str_assert_forall p.nvars ( "=> (and (Invar "^ xn_to_str p.nvars ^")"
     ^ " " 
     ^ match p.loopcond with
     | Equals(t1, t2) -> "(!= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")"
-    | LessThan(t1, t2) -> "(>= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")" 
+    | LessThan(t1, t2) -> "(<> " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")" 
     ^ str_of_test p.assertion ) in
   let call_solver =
     "; appel au solveur\n(check-sat-using (then qe smt))\n(get-model)\n(exit)\n" in
