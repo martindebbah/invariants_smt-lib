@@ -22,6 +22,8 @@ type program = {nvars : int;
 
 let x n = "x" ^ string_of_int n
 
+(* Renvoie les variables x1 ... xn sous forme de liste *)
+(* int -> term list *)
 let terms_of n =
   let rec loop n ret =
     match n with
@@ -127,10 +129,20 @@ let p1 = {nvars = 2;
   un autre programme test, et vérifiez qu'il donne un fichier SMTLIB
   de la forme attendue. *)
   
+(* p2 =
+  int i = 2;
+  int v = 0;
+  while (i < 5) {
+    i += 1;
+    v += 5;
+  }
+  assert(v == 15)
+  *)
 let p2 = {nvars = 2;
   inits = [(Const 2); (Const 0)];
   mods = [Add((Var 1), (Const 1)); Add((Var 2), (Const 5))];
   loopcond = LessThan((Var 1), (Const 5));
   assertion = Equals((Var 2), (Const 15))}
   
-let () = Printf.printf "%s" (smtlib_of_wa p2)
+let () = Printf.printf "%s" (smtlib_of_wa p1)
+    (* Printf.printf "%s" (smtlib_of_wa p2) *)
