@@ -2,14 +2,14 @@ open Printf
 
 (* Définitions de terme, test et programme *)
 type term = 
- | Const of int
- | Var of int
- | Add of term * term
- | Mult of term * term
+  | Const of int
+  | Var of int
+  | Add of term * term
+  | Mult of term * term
 
 type test = 
- | Equals of term * term
- | LessThan of term * term
+  | Equals of term * term
+  | LessThan of term * term
 
 let tt = Equals (Const 0, Const 0)
 let ff = LessThan (Const 0, Const 0)
@@ -50,9 +50,9 @@ let string_repeat s n =
    de caractères qui exprime que le tuple (t1, ..., tk) est dans 
    l'invariant.  Par exemple, str_condition [Var 1; Const 10] retourne 
    "(Inv x1 10)".
-   *)
+*)
 let str_condition l =
-  List.fold_left (fun t1 t2 -> t1 ^ " " ^ str_of_term t2) "(Inv" l ^ ")"
+  List.fold_left (fun t1 t2 -> t1 ^ " " ^ str_of_term t2) "(Invar" l ^ ")"
   
 
 (* Question 3. Écrire une fonction 
@@ -84,13 +84,22 @@ let smtlib_of_wa p =
     ^"(declare-fun Invar (" ^ string_repeat "Int " n ^  ") Bool)" in
   let loop_condition p =
     "; la relation Invar est un invariant de boucle\n"
-    ^"TODO" (* À compléter *) in
+    ^ str_assert_forall p.nvars ( "=> (and (Invar (x1 x2) "
+    ^ str_condition (p.inits)
+    ^ " " 
+    ^ str_of_test p.loopcond ^ ") " 
+    ^ str_condition p.mods ) in
   let initial_condition p =
     "; la relation Invar est vraie initialement\n"
     ^str_assert (str_condition p.inits) in
   let assertion_condition p =
     "; l'assertion finale est vérifiée\n"
-    ^"TODO" (* À compléter *) in
+    ^ str_assert_forall p.nvars ( "=> (and (Invar (x1 x2)"
+    ^ " " 
+    ^ match p.loopcond with
+    | Equals(t1, t2) -> "(!= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")"
+    | LessThan(t1, t2) -> "(>= " ^ str_of_term t1 ^ " " ^ str_of_term t2 ^ ")" 
+    ^ str_of_test p.assertion ) in
   let call_solver =
     "; appel au solveur\n(check-sat-using (then qe smt))\n(get-model)\n(exit)\n" in
   String.concat "\n" [declare_invariant p.nvars;
@@ -98,7 +107,6 @@ let smtlib_of_wa p =
                       initial_condition p;
                       assertion_condition p;
                       call_solver]
-
 let p1 = {nvars = 2;
           inits = [(Const 0) ; (Const 0)];
           mods = [Add ((Var 1), (Const 1)); Add ((Var 2), (Const 3))];
@@ -106,8 +114,7 @@ let p1 = {nvars = 2;
           assertion = Equals ((Var 2),(Const 9))}
 
 
-let () = (*Printf.printf "%s" (smtlib_of_wa p1)*)
-    Printf.printf "%s\n" (str_assert_forall 2 "< x1 x2");;
+let () = Printf.printf "%s" (smtlib_of_wa p1)
 
 (* Question 5. Vérifiez que votre implémentation donne un fichier
    SMTLIB qui est équivalent au fichier que vous avez écrit à la main
